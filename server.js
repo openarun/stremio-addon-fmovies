@@ -5,5 +5,5 @@ const addonInterface = require("./addon")
 serveHTTP(addonInterface, { port: (process.env.PORT || 5000) })
 
 // when you've deployed your addon, un-comment this line
-// publishToCentral(""")
+publishToCentral(`${process.env.ADDON_URL}/manifest.json`)
 
