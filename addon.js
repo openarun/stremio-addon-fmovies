@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 // Docs: https://github.com/Stremio/stremio-addon-sdk/blob/master/docs/api/responses/manifest.md
 const manifest = {
 	"id": "community.fmovies",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"catalogs": [
 		{
 			"type": "movie",
@@ -23,30 +23,31 @@ const manifest = {
 }
 const builder = new addonBuilder(manifest)
 
-const getMovieCatalog = (catalogID, type) => {
-	let catalog;
-
+const getMovieCatalog = async (catalogID, type) => {
+	let catalog = [];
+	console.log(catalogID, type)
 	switch (catalogID) {
 		case "top":
-			catalog = [
-
-			]
+			let resp = await fetch(`${process.env.API_URL}/top`)
+			let stream_json = await resp.json()
+			for (data of stream_json.data) {
+				catalog.push({ id: data, type: type });
+			}
 			break
 		default:
 			catalog = []
 			break
 	}
 	return Promise.resolve(catalog)
-
 }
 
 
 builder.defineCatalogHandler(({ type, id }) => {
-
+	console.log(type, id)
 	let results
 	switch (type) {
 		case "movie":
-			results = getMovieCatalog(id, type)
+			results = getMovieCatalog(id, type);
 			break
 		default:
 			results = []
@@ -69,7 +70,7 @@ builder.defineStreamHandler(async ({ type, id }) => {
 			let meta = await stream_json.data[0];
 			return Promise.resolve({ streams: [{ title: "Title: " + meta.name + "\nVidCloud HD ", url: meta.stream_link }] })
 		}
-		return Promise.resolve({ streams:[]})
+		return Promise.resolve({ streams: [] })
 	}
 	else {
 		return Promise.resolve({ streams: [] })
