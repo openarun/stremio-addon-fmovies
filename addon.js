@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 // Docs: https://github.com/Stremio/stremio-addon-sdk/blob/master/docs/api/responses/manifest.md
 const manifest = {
 	"id": "community.fmovies",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"catalogs": [
 		{
 			"type": "movie",
@@ -19,7 +19,8 @@ const manifest = {
 		"movie",
 	],
 	"name": "FMovies",
-	"description": "FMovies.to Stremio Addon.\n Watch movies in high quality from FMovies Sources"
+	"description": "FMovies.to Stremio Addon.\n Watch movies in high quality HD, SD from FMovies Sources",
+	"logo": "https://i.imgur.com/Cwb4GYt.png"
 }
 const builder = new addonBuilder(manifest)
 
