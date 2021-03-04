@@ -19,7 +19,7 @@ const manifest = {
 		"movie",
 	],
 	"name": "FMovies",
-	"description": "FMovies.to Stremio Addon.\n Watch movies in high quality HD, SD from FMovies Sources",
+	"description": "FMovies Stremio Addon.\nWatch movies in FullHD (1080p), HD (720p), SD (360p) from FMovies Sources",
 	"logo": "https://i.imgur.com/Cwb4GYt.png"
 }
 const builder = new addonBuilder(manifest)
@@ -69,10 +69,24 @@ builder.defineStreamHandler(async ({ type, id }) => {
 		let stream_json = await stream_resp.json()
 		if (stream_json && stream_json.data) {
 			let metas = await stream_json.data;
-			let streams =[];
-			for(meta of metas){
-				for (i in meta.stream_links){
-					streams.push({ title: "Title: " + meta.name+"\n"+i==0?"360p":i==1?"720p":i==2?"1080p":"", url: meta.stream_links[i]})
+			let streams = [];
+			for (meta of metas) {
+				for (i in meta.stream_links) {
+					var standard;
+					switch (i) {
+						case "2":
+							standard = "360p (SD)";
+							break;
+						case "1":
+							standard = "720p (HD)";
+							break;
+						case "0":
+							standard = "1080p (FHD)";
+							break;
+						default:
+							standard = "";
+					}
+					streams.push({ title: `Title: ${meta.name} \n Quality: ${standard}`, url: meta.stream_links[i] })
 				}
 			}
 			return Promise.resolve({ streams: streams })
