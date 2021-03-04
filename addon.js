@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 // Docs: https://github.com/Stremio/stremio-addon-sdk/blob/master/docs/api/responses/manifest.md
 const manifest = {
 	"id": "community.fmovies",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"catalogs": [
 		{
 			"type": "movie",
@@ -68,8 +68,14 @@ builder.defineStreamHandler(async ({ type, id }) => {
 		let stream_resp = await fetch(`${process.env.API_URL}/stream/${id}`)
 		let stream_json = await stream_resp.json()
 		if (stream_json && stream_json.data) {
-			let meta = await stream_json.data[0];
-			return Promise.resolve({ streams: [{ title: "Title: " + meta.name + "\nVidCloud HD ", url: meta.stream_link }] })
+			let metas = await stream_json.data;
+			let streams =[];
+			for(meta of metas){
+				for (i in meta.stream_links){
+					streams.push({ title: "Title: " + meta.name+"\n"+i==0?"360p":i==1?"720p":i==2?"1080p":"", url: meta.stream_links[i]})
+				}
+			}
+			return Promise.resolve({ streams: { title: "Title: " + meta.name + "\nVidCloud HD ", url: meta.stream_link } })
 		}
 		return Promise.resolve({ streams: [] })
 	}
