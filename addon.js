@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 // Docs: https://github.com/Stremio/stremio-addon-sdk/blob/master/docs/api/responses/manifest.md
 const manifest = {
 	"id": "community.fmovies",
-	"version": "0.0.8",
+	"version": "0.0.9",
 	"catalogs": [
 		{
 			"type": "movie",
@@ -75,7 +75,7 @@ builder.defineStreamHandler(async ({ type, id }) => {
 					streams.push({ title: "Title: " + meta.name+"\n"+i==0?"360p":i==1?"720p":i==2?"1080p":"", url: meta.stream_links[i]})
 				}
 			}
-			return Promise.resolve({ streams: { title: "Title: " + meta.name + "\nVidCloud HD ", url: meta.stream_link } })
+			return Promise.resolve({ streams: streams })
 		}
 		return Promise.resolve({ streams: [] })
 	}
