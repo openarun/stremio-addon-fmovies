@@ -2,7 +2,7 @@
 
 const { serveHTTP, publishToCentral } = require("stremio-addon-sdk")
 const addonInterface = require("./addon")
-serveHTTP(addonInterface, { port: (process.env.PORT || 5000) })
+serveHTTP(addonInterface, { port: (process.env.PORT || 5000), cacheMaxAge: 60})
 
 // when you've deployed your addon, un-comment this line
 publishToCentral(`${process.env.ADDON_URL}/manifest.json`)
