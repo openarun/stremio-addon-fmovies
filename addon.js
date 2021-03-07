@@ -74,14 +74,24 @@ builder.defineStreamHandler(async ({ type, id }) => {
 				for (i in meta.stream_links) {
 					var standard;
 					switch (i) {
+<<<<<<< HEAD
 						case "0":
 							standard = "1080p (FHD)";
+=======
+						case "2":
+							standard = "360p (SD)";
+>>>>>>> 0c6f0f291b7cdd3d2ec522459da091418242c7dc
 							break;
 						case "1":
 							standard = "720p (HD)";
 							break;
+<<<<<<< HEAD
 						case "2":
 							standard = "360p (SD)";
+=======
+						case "0":
+							standard = "1080p (FHD)";
+>>>>>>> 0c6f0f291b7cdd3d2ec522459da091418242c7dc
 							break;
 						default:
 							standard = "";
