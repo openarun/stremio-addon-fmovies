@@ -3,12 +3,13 @@ const fetch = require("node-fetch");
 // Docs: https://github.com/Stremio/stremio-addon-sdk/blob/master/docs/api/responses/manifest.md
 const manifest = {
 	"id": "community.fmovies",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"catalogs": [
 		{
 			"type": "movie",
 			"id": "top",
 			"name": "FMovies",
+			"extra": [{ name: "search", isRequired: false }]
 		},
 	],
 	"resources": [
@@ -19,14 +20,13 @@ const manifest = {
 		"movie",
 	],
 	"name": "FMovies",
-	"description": "FMovies Stremio Addon.\nWatch movies in FullHD (1080p), HD (720p), SD (360p) from FMovies Sources",
+	"description": "FMovies Stremio Addon.\nSearch and Watch movies in FullHD (1080p), HD (720p), SD (360p) from FMovies Sources",
 	"logo": "https://i.imgur.com/Cwb4GYt.png"
 }
 const builder = new addonBuilder(manifest)
 
 const getMovieCatalog = async (catalogID, type) => {
 	let catalog = [];
-	console.log(catalogID, type)
 	switch (catalogID) {
 		case "top":
 			let resp = await fetch(`${process.env.API_URL}/top`)
@@ -42,10 +42,31 @@ const getMovieCatalog = async (catalogID, type) => {
 	return Promise.resolve(catalog)
 }
 
+const getSearchCatalog = async (type, query) => {
+	let catalog = []
+	switch (type) {
+		case "movie":
+			let resp = await fetch(`${process.env.API_URL}/movie/search?q=${query}`)
+			let stream_json = await resp.json()
+			catalog = stream_json.data;
+			break;
+		default:
+			catalog = []
+			break
+	}
+	return Promise.resolve(catalog)
+}
 
-builder.defineCatalogHandler(({ type, id }) => {
-	console.log(type, id)
+
+builder.defineCatalogHandler(({ type, id, extra }) => {
 	let results
+	if (extra && extra.search) {
+		results = getSearchCatalog(type, extra.search)
+		return results.then(items => ({
+			metas: items
+		}))
+	}
+
 	switch (type) {
 		case "movie":
 			results = getMovieCatalog(id, type);
